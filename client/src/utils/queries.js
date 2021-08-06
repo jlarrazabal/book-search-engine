@@ -1,31 +1,13 @@
 import { gql } from '@apollo/client';
 
-export const QUERY_MATCHUPS = gql`
-  query getAllMatchups {
-    getAllMatchups {
+export const QUERY_ME = gql`
+  query me {
+    me {
       _id
-      tech1
-      tech2
-      tech1_votes
-      tech2_votes
-    }
-  }`
-
-export const QUERY_MATCHUP = gql`
-  query getMatchup($matchID: ID!) {
-    getMatchup(matchID: $matchID) {
-      _id
-      tech1
-      tech2
-      tech1_votes
-      tech2_votes
-    }
-  }`
-
-export const QUERY_TECHS = gql`
-  query getAllTech {
-    getAllTech {
-      name
+      username
+      email
+      bookCount
+      savedBooks
     }
   }
 `;

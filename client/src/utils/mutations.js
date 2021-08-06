@@ -1,24 +1,67 @@
-import { gql } from '@apollo/client';
+import {
+  gql
+} from '@apollo/client';
 
-export const ADD_MATCHUP = gql`
-  mutation createMatchup($tech1: String!, $tech2: String!) {
-    createMatchup(tech1: $tech1, tech2: $tech2) {
+export const LOGIN = gql `
+mutation login($email: String!, $password: String!) {
+  createMatchup(email: $email, password: $password) {
+    token
+    user {
       _id
-      tech1
-      tech2
-      tech1_votes
-      tech2_votes
-    }
-  }`
-
-export const ADD_VOTE = gql`
-  mutation createVote($matchID: ID!, $techNum: Int!) {
-    createVote(matchID: $matchID, techNum: $techNum) {
-      _id
-      tech1
-      tech2
-      tech1_votes
-      tech2_votes
+      username
+      email
+      bookCount
+      savedBooks
     }
   }
-`;
+}`;
+
+export const ADD_USER = gql `
+mutation addUser($username: String!, $email: String!, $password: String!) {
+  addUser(username: $username, email: $email, password: $password) {
+    token
+    user {
+      _id
+      username
+      email
+      bookCount
+      savedBooks
+    }
+  }
+}`;
+
+export const SAVE_BOOK = gql `
+mutation saveBook($input: BookInput) {
+  saveBook(input: $input) {
+    _id
+    username
+    email
+    bookCount
+    savedBooks {
+      bookId
+      authors
+      description
+      title
+      image
+      link
+    }
+  }
+}`;
+
+export const REMOVE_BOOK = gql `
+mutation removeBook($bookId: String!) {
+  removeBook(bookId: $bookId) {
+    _id
+    username
+    email
+    bookCount
+    savedBooks {
+      bookId
+      authors
+      description
+      title
+      image
+      link
+    }
+  }
+}`;
