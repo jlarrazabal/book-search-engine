@@ -1,11 +1,10 @@
 const { User } = require('../models');
+const {signToken} = require("../utils/auth");
 
 const resolvers = {
   Query: {
-    me: async (parent, { _id, username }) => {
-      return await User.findOne({
-        $or: [{_id, username}]
-      });
+    me: async (parent, args, context) => {
+      return await User.findById(context.user._id);
     },
   },
 
@@ -25,25 +24,25 @@ const resolvers = {
       return {token, user};
     },
 
-    addUser: async (parent, {username, email, password}) => {
+    addUser: async (parent, {username, email, password}, context) => {
       const user = await User.create({username, email, password});
       const token = signToken(user);
       return {token, user};
     },
 
-    saveBook: async (parent, {user, saveBookInput}) => {
-      console.log(user);
+    saveBook: async (parent, {input}, context) => {
+      console.log(context.user);
         const updatedUser = await User.findOneAndUpdate(
-          { _id: user._id },
-          { $addToSet: { savedBooks: saveBookInput } },
+          { _id: context.user._id },
+          { $addToSet: { savedBooks: input } },
           { new: true, runValidators: true }
         );
         return updatedUser;
     },
 
-    removeBook: async (parent, {user, bookId}) => {
+    removeBook: async (parent, {bookId}, context) => {
       const updatedUser = await User.findOneAndUpdate(
-        { _id: user._id },
+        { _id: context.user._id },
         { $pull: { savedBooks: { bookId: bookId } } },
         { new: true }
       );
