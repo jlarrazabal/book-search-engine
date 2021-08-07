@@ -3,7 +3,7 @@ import {
 } from '@apollo/client';
 
 export const LOGIN_USER = gql `
-mutation login($email: String!, $password: String!) {
+mutation loginUser($email: String!, $password: String!) {
   createMatchup(email: $email, password: $password) {
     token
     user {
