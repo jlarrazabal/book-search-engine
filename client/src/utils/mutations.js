@@ -4,14 +4,21 @@ import {
 
 export const LOGIN_USER = gql `
 mutation loginUser($email: String!, $password: String!) {
-  createMatchup(email: $email, password: $password) {
+  loginUser(email: $email, password: $password) {
     token
     user {
       _id
       username
       email
       bookCount
-      savedBooks
+      savedBooks{
+        bookId
+        authors
+        description
+        title
+        image
+        link
+      }
     }
   }
 }`;
@@ -25,7 +32,14 @@ mutation addUser($username: String!, $email: String!, $password: String!) {
       username
       email
       bookCount
-      savedBooks
+      savedBooks {
+        bookId
+        authors
+        description
+        title
+        image
+        link
+      }
     }
   }
 }`;

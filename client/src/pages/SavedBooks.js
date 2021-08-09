@@ -1,4 +1,4 @@
-import React, { useState } from 'react';
+import React from 'react';
 import {useQuery, useMutation} from '@apollo/client'
 import { Jumbotron, Container, CardColumns, Card, Button } from 'react-bootstrap';
 import {GET_ME} from "../utils/queries";
@@ -7,14 +7,13 @@ import {REMOVE_BOOK} from "../utils/mutations";
 import Auth from '../utils/auth';
 import { removeBookId } from '../utils/localStorage';
 
-const SavedBooks = async () => {
-  const [userData, setUserData] = useState({});
-
+const SavedBooks = () => {
+  // const [userData, setUserData] = useState({});
   //Adding the removeBook mutation
   const [removeBook, {error}] = useMutation(REMOVE_BOOK);
 
   // use this to determine if `useEffect()` hook needs to run again
-  const userDataLength = Object.keys(userData).length;
+  // const userDataLength = Object.keys(userData).length;
 
   // useEffect(() => {
   //   const getUserData = async () => {
@@ -43,15 +42,8 @@ const SavedBooks = async () => {
 
 
   //Getting the user data using the GET_ME query
-  const { loading, err, data } = useQuery(GET_ME);
-  if(loading) {
-    return "loading...";
-  } else if(err) {
-    return "Error: something went wrong"
-  } else {
-    setUserData(data);
-  }
-
+  const { loading, data } = useQuery(GET_ME);
+  debugger;
   // create function that accepts the book's mongo _id value as param and deletes the book from the database
   const handleDeleteBook = async (bookId) => {
     const token = Auth.loggedIn() ? Auth.getToken() : null;
@@ -71,16 +63,17 @@ const SavedBooks = async () => {
       }
 
       const updatedUser = await data.json();
-      setUserData(updatedUser);
+
+      console.log(updatedUser);
+      // setUserData(updatedUser);
       // upon success, remove book's id from localStorage
       removeBookId(bookId);
     } catch (err) {
       console.error(err);
     }
   };
-
   // if data isn't here yet, say so
-  if (!userDataLength) {
+  if (loading) {
     return <h2>LOADING...</h2>;
   }
 
@@ -93,12 +86,12 @@ const SavedBooks = async () => {
       </Jumbotron>
       <Container>
         <h2>
-          {userData.savedBooks.length
-            ? `Viewing ${userData.savedBooks.length} saved ${userData.savedBooks.length === 1 ? 'book' : 'books'}:`
+          {data.me.savedBooks.length
+            ? `Viewing ${data.me.savedBooks.length} saved ${data.me.savedBooks.length === 1 ? 'book' : 'books'}:`
             : 'You have no saved books!'}
         </h2>
         <CardColumns>
-          {userData.savedBooks.map((book) => {
+          {data.me.savedBooks.map((book) => {
             return (
               <Card key={book.bookId} border='dark'>
                 {book.image ? <Card.Img src={book.image} alt={`The cover for ${book.title}`} variant='top' /> : null}
